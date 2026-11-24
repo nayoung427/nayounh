@@ -5,35 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>교시별 졸음 연구소</title>
   <style>
-    :root {
-      --bg: #d9d2c7;
-      --grid: rgba(90, 82, 71, 0.13);
-      --card: #f6f3ed;
-      --card-tint: rgba(246, 243, 237, 0.94);
-      --ink: #23201c;
-      --muted: #6e675d;
-      --accent: #3d5a45;
-      --accent-soft: #dfe8e1;
-      --warm: #b5653b;
-      --border: rgba(35, 32, 28, 0.14);
-    }
+:root {
+--bg: #f8fafc;
+--grid: transparent;
+--card: #ffffff;
+--card-tint: #ffffff;
+--ink: #1e293b;
+--muted: #64748b;
+--accent: #1d4ed8;
+--accent-soft: #eff6ff;
+--warm: #0f172a;
+--border: rgba(15, 23, 42, 0.08);
+}
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      color: var(--ink);
-      background-color: var(--bg);
-      background-image:
-        linear-gradient(to right, var(--grid) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-      background-size: 26px 26px;
-      min-height: 100vh;
-      padding: 20px 14px 56px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
+   body {
+font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+color: var(--ink);
+background-color: var(--bg);
+min-height: 100vh;
+padding: 20px 14px 56px;
+position: relative;
+overflow-x: hidden;
+}
     /* 배경 장식용 떠 있는 과목/교시 태그 칩 */
     .floating-chip {
       position: fixed;
