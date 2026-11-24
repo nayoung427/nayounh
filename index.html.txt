@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교시별 졸음 연구소</title>
+  <style>
+    :root {
+      --bg: #d9d2c7;
+      --grid: rgba(90, 82, 71, 0.13);
+      --card: #f6f3ed;
+      --card-tint: rgba(246, 243, 237, 0.94);
+      --ink: #23201c;
+      --muted: #6e675d;
+      --accent: #3d5a45;
+      --accent-soft: #dfe8e1;
+      --warm: #b5653b;
+      --border: rgba(35, 32, 28, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: 26px 26px;
+      min-height: 100vh;
+      padding: 20px 14px 56px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 배경 장식용 떠 있는 과목/교시 태그 칩 */
+    .floating-chip {
+      position: fixed;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(35, 32, 28, 0.72);
+      box-shadow: 0 6px 16px rgba(35, 32, 28, 0.12);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.85;
+    }
+    .chip-1 { top: 14%; left: 6%; background: #c5bed4; transform: rotate(-4deg); }
+    .chip-2 { bottom: 16%; left: 7%; background: #b9cfb8; transform: rotate(3deg); }
+    .chip-3 { top: 18%; right: 6%; background: #d6b6be; transform: rotate(4deg); }
+    .chip-4 { bottom: 14%; right: 7%; background: #d8bac7; transform: rotate(-3deg); }
+
+    @media (max-width: 720px) {
+      .floating-chip { display: none; }
+    }
+
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .user-pill {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--card-tint);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 26px 20px;
+      box-shadow: 0 14px 36px rgba(35, 32, 28, 0.12);
+    }
+
+    .emblem {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 12px rgba(61, 90, 69, 0.25);
+    }
+
+    .center-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .center-sub {
+      text-align: center;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 21px;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.15s ease;
+    }
+
+    .btn:active { transform: scale(0.99); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-dark {
+      background: #23201c;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e7e1d7;
+      color: var(--ink);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: #e6e0d6;
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      border: none;
+      background: transparent;
+      padding: 9px 6px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .period-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+
+    .chip-btn {
+      padding: 10px 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .chip-btn.selected {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .option-list {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+
+    .option-btn {
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 14px;
+      line-height: 1.45;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 700;
+    }
+
+    .option-btn.correct {
+      border-color: #2f7a4b;
+      background: #d9f0e1;
+      font-weight: 700;
+    }
+
+    .option-btn.wrong {
+      border-color: #b84335;
+      background: #f9deda;
+    }
+
+    .result-box {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .result-tag {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .tip-item {
+      padding: 14px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .tip-item h3 {
+      font-size: 15px;
+      margin-bottom: 5px;
+      color: var(--warm);
+    }
+
+    .tip-item p {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .hidden { display: none !important; }
+
+    .small-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .score-pill {
+      display: inline-block;
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* 앱 설치(홈 화면 추가) 안내 모달 */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 22, 18, 0.42);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      border-radius: 22px;
+      padding: 24px 20px 18px;
+      text-align: center;
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.22);
+    }
+
+    .modal-card h2 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .modal-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .text-link-btn {
+      margin-top: 10px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 배경 장식 태그 -->
+  <div class="floating-chip chip-1">1교시 아침잠</div>
+  <div class="floating-chip chip-2">5교시 식곤증</div>
+  <div class="floating-chip chip-3">생체리듬 퀴즈</div>
+  <div class="floating-chip chip-4">교시별 각성 팁</div>
+
+  <!-- 앱으로 다운받기 안내 모달 -->
+  <div id="installModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="emblem" style="width:52px;height:52px;font-size:16px;">졸음</div>
+      <h2>앱으로 다운받으시겠습니까?</h2>
+      <p>
+        홈 화면에 추가하면 앱처럼 전체 화면으로 빠르게 실행할 수 있습니다.
+      </p>
+      <button class="btn btn-dark" onclick="showInstallGuide()">앱으로 다운받기</button>
+      <div id="installGuideText" class="hidden" style="margin-top:10px;padding:10px;border-radius:12px;background:#f4f1ea;font-size:12.5px;color:#3a352f;line-height:1.5;">
+        아이패드/아이폰 Safari 하단(또는 우측 상단) <strong>공유 버튼(□↑) → '홈 화면에 추가'</strong>를 누르면 바로 앱 아이콘이 생성됩니다!
+      </div>
+      <button class="text-link-btn" onclick="closeInstallModal()">웹으로 볼래요</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <span class="badge">교시별 졸음 연구소</span>
+      <div id="userPill" class="user-pill">
+        <span id="userLabel"></span>
+        <button onclick="logout()" style="border:none;background:none;color:inherit;font-weight:700;cursor:pointer;text-decoration:underline;">변경</button>
+      </div>
+    </div>
+
+    <!-- 시작 / 학번·이름·비밀번호 화면 -->
+    <section id="loginView" class="card">
+      <div class="emblem">졸음</div>
+      <div class="center-title">어느 교시에 가장 졸릴까?</div>
+      <p class="center-sub">
+        학번과 이름을 입력하고 나의 최대 졸음 교시 테스트와<br />생체리듬 퀴즈·극복 팁을 확인해보세요.
+      </p>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="studentId">학번</label>
+          <input id="studentId" type="text" placeholder="예: 10215" maxlength="10" />
+        </div>
+        <div class="field">
+          <label for="studentName">이름</label>
+          <input id="studentName" type="text" placeholder="예: 홍길동" maxlength="12" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pin">비밀번호 (기록 이어보기용)</label>
+        <input id="pin" type="password" placeholder="4자리 이상 입력" maxlength="20" />
+      </div>
+
+      <button class="btn btn-primary" onclick="startApp()">시작하기</button>
+      <p class="small-note">
+        처음 입력하는 학번·이름이면 새로 만들어져요.<br />
+        같은 기기에서 학번·이름·비밀번호로 이어서 볼 수 있어요.
+      </p>
+    </section>
+
+    <!-- 메인 앱 화면 -->
+    <section id="mainView" class="card hidden">
+      <div class="tabs">
+        <button class="tab active" data-tab="test" onclick="switchTab('test')">졸음 테스트</button>
+        <button class="tab" data-tab="quiz" onclick="switchTab('quiz')">졸음 퀴즈</button>
+        <button class="tab" data-tab="tips" onclick="switchTab('tips')">극복 팁</button>
+      </div>
+
+      <!-- 1. 졸음 테스트 -->
+      <div id="panel-test">
+        <h1>나의 최대 졸음 교시 찾기</h1>
+        <p class="desc">하루 중 눈꺼풀이 가장 무거워지는 교시와 생활 패턴을 골라보세요.</p>
+
+        <label>1) 가장 졸음이 쏟아지는 교시는?</label>
+        <div class="period-grid" id="periodGrid"></div>
+
+        <label>2) 평소 전날 수면 시간은?</label>
+        <div class="option-list" id="sleepOptions">
+          <button class="option-btn" data-val="short" onclick="pickGroup('sleep', this)">5시간 이하 (수면 빚 누적 중)</button>
+          <button class="option-btn" data-val="mid" onclick="pickGroup('sleep', this)">6~7시간 (평일 평균 수준)</button>
+          <button class="option-btn" data-val="good" onclick="pickGroup('sleep', this)">7.5시간 이상 (잠은 꽤 자는 편)</button>
+        </div>
+
+        <label>3) 점심 식사 후 상태는?</label>
+        <div class="option-list" id="lunchOptions">
+          <button class="option-btn" data-val="heavy" onclick="pickGroup('lunch', this)">탄수화물 위주·과식해서 바로 나른함</button>
+          <button class="option-btn" data-val="light" onclick="pickGroup('lunch', this)">적당히 먹고 4~5교시 사이에 살짝 졸림</button>
+          <button class="option-btn" data-val="skip" onclick="pickGroup('lunch', this)">점심을 적게 먹거나 걸러서 배고픔·멍함</button>
+        </div>
+
+        <button class="btn btn-primary" onclick="runTest()">내 졸음 유형 결과 보기</button>
+
+        <div id="testResult" class="result-box hidden"></div>
+      </div>
+
+      <!-- 2. 졸음 퀴즈 -->
+      <div id="panel-quiz" class="hidden">
+        <h1>생체리듬 &amp; 졸음 퀴즈</h1>
+        <p class="desc">알고 보면 헷갈리는 졸음 상식을 퀴즈로 풀어보세요.</p>
+        <div class="score-pill" id="quizScoreBox">현재 점수: 0 / 3</div>
+
+        <div id="quizContainer"></div>
+
+        <button class="btn btn-secondary" style="margin-top:8px;" onclick="resetQuiz()">퀴즈 다시 풀기</button>
+      </div>
+
+      <!-- 3. 교시별 극복 팁 -->
+      <div id="panel-tips" class="hidden">
+        <h1>교시별 졸음 극복 팁</h1>
+        <p class="desc">시간대별로 바로 써먹을 수 있는 현실적인 각성 루틴입니다.</p>
+
+        <div class="tip-item">
+          <h3>1~2교시 · 아침 각성 타임</h3>
+          <p>기상 직후엔 체온과 각성도가 아직 덜 올라옵니다. 등굣길 밝은 빛을 쬐고, 쉬는 시간에 찬물 한 모금과 목·어깨 스트레칭으로 몸을 깨워보세요.</p>
+        </div>
+
+        <div class="tip-item">
+          <h3>3~4교시 · 오전 집중 구간</h3>
+          <p>오전 중반은 집중력이 비교적 안정적이지만, 당 섭취가 많으면 4교시 막판에 피로가 올 수 있습니다. 쉬는 시간엔 스마트폰 대신 창가 환기나 자리 일어나기를 추천합니다.</p>
+        </div>
+
+        <div class="tip-item">
+          <h3>5교시 · 식곤증 &amp; 서카디안 딥 주의보</h3>
+          <p>점심 식사 후 혈당·소화 반응과 낮 시간대 생체리듬 저하가 겹치는 구간입니다. 밥을 한 번에 많이 먹기보다 반찬 비중을 늘리고, 5교시 시작 전 10분 내외의 짧은 눈 감기나 가벼운 걷기가 효과적입니다.</p>
+        </div>
+
+        <div class="tip-item">
+          <h3>6~7교시 · 오후 누적 피로 구간</h3>
+          <p>하루 누적 피로가 쌓이는 시간입니다. 25~30분 단위로 필기·문제 풀이 등 손을 쓰는 활동으로 전환하고, 너무 늦은 오후 카페인은 밤잠을 방해할 수 있으니 주의하세요.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "drowsy_lab_students_v2";
+    let currentKey = null;
+    let selectedPeriod = null;
+    let selectedSleep = null;
+    let selectedLunch = null;
+
+    const quizData = [
+      {
+        q: "1. 점심 식사 뒤 5교시에 유독 졸음이 몰려오는 이유로 가장 알맞은 것은?",
+        options: [
+          "식사 후 소화 과정과 낮 시간대 생체리듬이 맞물리기 때문",
+          "점심시간에는 교실 산소가 완전히 사라지기 때문",
+          "오후가 되면 심장 박동이 멈추기 때문"
+        ],
+        answer: 0,
+        explain: "식후 대사·혈당 변화와 오후 초반 생체리듬 저하가 겹치면서 5교시 졸음이 짙어지기 쉽습니다."
+      },
+      {
+        q: "2. 낮잠을 잘 때 졸음 관성(일어나서 더 멍한 상태)을 줄이려면 어떻게 하는 것이 좋을까?",
+        options: [
+          "1시간 반 이상 깊게 자는 것이 항상 좋다",
+          "너무 길지 않게 짧게 휴식하고, 늦은 저녁 직전에는 피한다",
+          "불을 끄고 이불을 머리 끝까지 덮고 잔다"
+        ],
+        answer: 1,
+        explain: "낮잠이 너무 길어지면 깊은 수면에서 깨면서 멍함이 심해질 수 있고, 너무 늦은 시간엔 밤잠에 영향을 줍니다."
+      },
+      {
+        q: "3. 수업 중 졸음이 올 때 가장 도움이 되는 행동은?",
+        options: [
+          "고개를 책상에 푹 숙인 채 눈만 감고 버티기",
+          "쉬는 시간에 자리에서 일어나 환기·스트레칭하기",
+          "물 한 모금도 안 마시고 숨 참기"
+        ],
+        answer: 1,
+        explain: "쉬는 시간의 가벼운 움직임과 환기는 기분 전환과 각성 유지에 도움이 됩니다."
+      }
+    ];
+
+    function showInstallGuide() {
+      document.getElementById("installGuideText").classList.remove("hidden");
+    }
+
+    function closeInstallModal() {
+      document.getElementById("installModal").classList.add("hidden");
+    }
+
+    function loadUsers() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveUsers(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function initPeriods() {
+      const grid = document.getElementById("periodGrid");
+      grid.innerHTML = "";
+      for (let i = 1; i <= 7; i++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chip-btn";
+        btn.textContent = `${i}교시`;
+        btn.onclick = () => {
+          selectedPeriod = i;
+          document.querySelectorAll("#periodGrid .chip-btn").forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+        };
+        grid.appendChild(btn);
+      }
+    }
+
+    function startApp() {
+      const sid = document.getElementById("studentId").value.trim();
+      const sname = document.getElementById("studentName").value.trim();
+      const pin = document.getElementById("pin").value.trim();
+
+      if (!sid) {
+        alert("학번을 입력해주세요.");
+        return;
+      }
+      if (!sname) {
+        alert("이름을 입력해주세요.");
+        return;
+      }
+      if (pin.length < 4) {
+        alert("비밀번호는 4자리 이상 입력해주세요.");
+        return;
+      }
+
+      const users = loadUsers();
+      const key = `${sid}_${sname}`;
+
+      if (users[key]) {
+        if (users[key].pin !== pin) {
+          alert("이미 등록된 학번·이름입니다. 비밀번호가 일치하지 않아요!");
+          return;
+        }
+      } else {
+        users[key] = {
+          studentId: sid,
+          studentName: sname,
+          pin,
+          testResult: null,
+          quizAnswers: {}
+        };
+        saveUsers(users);
+      }
+
+      currentKey = key;
+      document.getElementById("userLabel").textContent = `${sid} ${sname}`;
+      document.getElementById("userPill").style.display = "flex";
+      document.getElementById("loginView").classList.add("hidden");
+      document.getElementById("mainView").classList.remove("hidden");
+
+      restoreUserData(users[key]);
+      renderQuiz();
+    }
+
+    function restoreUserData(record) {
+      initPeriods();
+      selectedPeriod = null;
+      selectedSleep = null;
+      selectedLunch = null;
+      document.querySelectorAll("#sleepOptions .option-btn, #lunchOptions .option-btn").forEach(b => b.classList.remove("selected"));
+
+      const box = document.getElementById("testResult");
+      if (record.testResult) {
+        const r = record.testResult;
+        selectedPeriod = r.period;
+        document.querySelectorAll("#periodGrid .chip-btn").forEach(b => {
+          if (b.textContent === `${r.period}교시`) b.classList.add("selected");
+        });
+        showTestResult(r, false);
+      } else {
+        box.classList.add("hidden");
+        box.innerHTML = "";
+      }
+    }
+
+    function logout() {
+      currentKey = null;
+      document.getElementById("userPill").style.display = "none";
+      document.getElementById("mainView").classList.add("hidden");
+      document.getElementById("loginView").classList.remove("hidden");
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab").forEach(t => {
+        t.classList.toggle("active", t.dataset.tab === tabName);
+      });
+      ["test", "quiz", "tips"].forEach(name => {
+        document.getElementById(`panel-${name}`).classList.toggle("hidden", name !== tabName);
+      });
+    }
+
+    function pickGroup(group, btn) {
+      const containerId = group === "sleep" ? "sleepOptions" : "lunchOptions";
+      document.querySelectorAll(`#${containerId} .option-btn`).forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      if (group === "sleep") selectedSleep = btn.dataset.val;
+      if (group === "lunch") selectedLunch = btn.dataset.val;
+    }
+
+    function runTest() {
+      if (!selectedPeriod || !selectedSleep || !selectedLunch) {
+        alert("교시, 수면 시간, 점심 후 상태를 모두 선택해주세요!");
+        return;
+      }
+
+      let typeTitle = "균형 잡힌 시간대 졸음형";
+      let advice = "쉬는 시간 환기와 물 마시기로 컨디션을 가볍게 관리해보세요.";
+
+      if (selectedPeriod <= 2 && selectedSleep === "short") {
+        typeTitle = "아침 수면 부족형";
+        advice = "1~2교시에 가장 흔들리는 타입입니다. 취침 시간을 30분만 당겨보고 아침 햇빛을 쬐어보세요.";
+      } else if (selectedPeriod >= 4 && selectedPeriod <= 5 && selectedLunch === "heavy") {
+        typeTitle = "점심 식곤증 직격탄형";
+        advice = "5교시 전후 졸음이 강하게 오는 타입입니다. 점심 양을 조금 줄이고 탄수화물·단백질 균형을 맞춰보세요.";
+      } else if (selectedPeriod >= 6) {
+        typeTitle = "오후 피로 누적형";
+        advice = "하루 후반부에 에너지가 떨어지는 타입입니다. 6~7교시엔 필기·문제 풀이처럼 손과 눈을 함께 쓰는 활동이 유리합니다.";
+      } else {
+        typeTitle = `${selectedPeriod}교시 집중 파도형`;
+        advice = `${selectedPeriod}교시가 다가올 때 3분 스트레칭과 환기로 졸음 파도를 먼저 넘겨보세요.`;
+      }
+
+      const resultObj = {
+        period: selectedPeriod,
+        sleep: selectedSleep,
+        lunch: selectedLunch,
+        typeTitle,
+        advice
+      };
+
+      const users = loadUsers();
+      if (currentKey && users[currentKey]) {
+        users[currentKey].testResult = resultObj;
+        saveUsers(users);
+      }
+
+      showTestResult(resultObj, true);
+    }
+
+    function showTestResult(r, scrollIntoView) {
+      const box = document.getElementById("testResult");
+      box.classList.remove("hidden");
+      box.innerHTML = `
+        <span class="result-tag">최대 졸음 교시: ${r.period}교시</span>
+        <h2 style="font-size:18px;margin-bottom:6px;">${r.typeTitle}</h2>
+        <p style="font-size:14px;line-height:1.55;color:var(--muted);">${r.advice}</p>
+      `;
+      if (scrollIntoView) {
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById("quizContainer");
+      const users = loadUsers();
+      const savedAnswers = (currentKey && users[currentKey] && users[currentKey].quizAnswers) || {};
+      let score = 0;
+
+      container.innerHTML = "";
+      quizData.forEach((item, qIdx) => {
+        const picked = savedAnswers[qIdx];
+        if (picked === item.answer) score++;
+
+        const block = document.createElement("div");
+        block.className = "tip-item";
+
+        const title = document.createElement("h3");
+        title.style.color = "var(--ink)";
+        title.textContent = item.q;
+        block.appendChild(title);
+
+        const list = document.createElement("div");
+        list.className = "option-list";
+
+        item.options.forEach((optText, oIdx) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "option-btn";
+          btn.textContent = optText;
+
+          if (picked !== undefined) {
+            if (oIdx === item.answer) btn.classList.add("correct");
+            else if (oIdx === picked) btn.classList.add("wrong");
+          }
+
+          btn.onclick = () => selectQuizAnswer(qIdx, oIdx);
+          list.appendChild(btn);
+        });
+
+        block.appendChild(list);
+
+        if (picked !== undefined) {
+          const exp = document.createElement("p");
+          exp.textContent = (picked === item.answer ? "정답! " : "오답! ") + item.explain;
+          block.appendChild(exp);
+        }
+
+        container.appendChild(block);
+      });
+
+      document.getElementById("quizScoreBox").textContent = `현재 점수: ${score} / ${quizData.length}`;
+    }
+
+    function selectQuizAnswer(qIdx, oIdx) {
+      const users = loadUsers();
+      if (!currentKey || !users[currentKey]) return;
+      users[currentKey].quizAnswers = users[currentKey].quizAnswers || {};
+      users[currentKey].quizAnswers[qIdx] = oIdx;
+      saveUsers(users);
+      renderQuiz();
+    }
+
+    function resetQuiz() {
+      const users = loadUsers();
+      if (currentKey && users[currentKey]) {
+        users[currentKey].quizAnswers = {};
+        saveUsers(users);
+      }
+      renderQuiz();
+    }
+  </script>
+</body>
+</html>
