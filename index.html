@@ -2,33 +2,39 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>교시별 졸음 연구소</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-:root {
---bg: #f8fafc;
---grid: transparent;
---card: #ffffff;
---card-tint: #ffffff;
---ink: #1e293b;
---muted: #64748b;
---accent: #1d4ed8;
---accent-soft: #eff6ff;
---warm: #0f172a;
---border: rgba(15, 23, 42, 0.08);
-}
+    :root {
+      --bg: #d9d2c7;
+      --grid: rgba(90, 82, 71, 0.13);
+      --card: #f6f3ed;
+      --card-tint: rgba(246, 243, 237, 0.94);
+      --ink: #23201c;
+      --muted: #6e675d;
+      --accent: #3d5a45;
+      --accent-soft: #dfe8e1;
+      --warm: #b5653b;
+      --border: rgba(35, 32, 28, 0.14);
+    }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-   body {
-font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-color: var(--ink);
-background-color: var(--bg);
-min-height: 100vh;
-padding: 20px 14px 56px;
-position: relative;
-overflow-x: hidden;
-}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: 26px 26px;
+      min-height: 100vh;
+      padding: 20px 14px 56px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
     /* 배경 장식용 떠 있는 과목/교시 태그 칩 */
     .floating-chip {
       position: fixed;
@@ -158,7 +164,7 @@ overflow-x: hidden;
       margin-bottom: 6px;
     }
 
-    input[type="text"], input[type="password"] {
+    input[type="text"], input[type="password"], input[type="url"], input[type="number"] {
       width: 100%;
       padding: 12px 14px;
       border-radius: 12px;
@@ -198,8 +204,8 @@ overflow-x: hidden;
 
     .tabs {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
       background: #e6e0d6;
       padding: 5px;
       border-radius: 14px;
@@ -209,9 +215,9 @@ overflow-x: hidden;
     .tab {
       border: none;
       background: transparent;
-      padding: 9px 6px;
+      padding: 9px 4px;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       color: var(--muted);
       cursor: pointer;
@@ -387,6 +393,141 @@ overflow-x: hidden;
       cursor: pointer;
       padding: 6px;
     }
+
+    /* 잠깨기 미션 전용 스타일 */
+    #wakeMissionBox {
+      --wm-surface: #ffffff;
+      --wm-surface2: #efeae1;
+      --wm-fg: #23201c;
+      --wm-muted: #6e675d;
+      --wm-line: rgba(35, 32, 28, 0.14);
+      --wm-accent: #3d5a45;
+      --wm-accent-fg: #ffffff;
+      --wm-done: #d48b28;
+      --wm-warn: #b5653b;
+    }
+    #wakeMissionBox .wm-card {
+      background: var(--wm-surface);
+      border: 1px solid var(--wm-line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    #wakeMissionBox h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    #wakeMissionBox .wm-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    #wakeMissionBox .wm-grow { flex: 1; min-width: 0; }
+    #wakeMissionBox .wm-btn {
+      font: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--wm-line);
+      background: var(--wm-surface2);
+      color: var(--wm-fg);
+      cursor: pointer;
+    }
+    #wakeMissionBox .wm-btn.primary {
+      background: var(--wm-accent);
+      border-color: var(--wm-accent);
+      color: var(--wm-accent-fg);
+    }
+    #wakeMissionBox .wm-btn.big {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+    }
+    #wakeMissionBox .wm-btn:disabled { opacity: 0.5; }
+    #wakeMissionBox .wm-small { font-size: 12px; color: var(--wm-muted); }
+    #wakeMissionBox .wm-pts { list-style: none; padding: 0; margin: 8px 0 0; }
+    #wakeMissionBox .wm-pts li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid var(--wm-line);
+      font-size: 13.5px;
+    }
+    #wakeMissionBox .wm-pts li:first-child { border-top: none; }
+    #wakeMissionBox .wm-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12.5px;
+      background: var(--wm-surface2);
+      border: 2px solid var(--wm-line);
+      flex: none;
+    }
+    #wakeMissionBox .wm-dot.ok {
+      background: var(--wm-done);
+      border-color: var(--wm-done);
+      color: #1b1408;
+    }
+    #wakeMissionBox .wm-dot.next {
+      border-color: var(--wm-accent);
+      color: var(--wm-accent);
+    }
+    #wakeMissionBox .wm-mono { font-variant-numeric: tabular-nums; }
+    #wakeMissionBox canvas {
+      display: block;
+      width: 100%;
+      height: 240px;
+      border-radius: 12px;
+      background: var(--wm-surface2);
+    }
+    #wakeMissionBox .wm-status {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    #wakeMissionBox .wm-stat {
+      background: var(--wm-surface2);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    #wakeMissionBox .wm-stat .k { font-size: 11.5px; color: var(--wm-muted); }
+    #wakeMissionBox .wm-stat .v { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    #wakeMissionBox .wm-msg {
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--wm-surface2);
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+    #wakeMissionBox .wm-msg.warn { color: var(--wm-warn); }
+    #wakeMissionBox .wm-done { text-align: center; padding: 24px 12px; }
+    #wakeMissionBox .wm-badge { font-size: 44px; font-weight: 900; color: var(--wm-done); line-height: 1; }
+    #wakeMissionBox #qr { display: flex; justify-content: center; margin-top: 12px; }
+    #wakeMissionBox #qr img,
+    #wakeMissionBox #qr canvas {
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      width: 190px !important;
+      height: auto !important;
+    }
+    #wakeMissionBox .wm-linkbox {
+      word-break: break-all;
+      font-size: 12px;
+      background: var(--wm-surface2);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -426,7 +567,7 @@ overflow-x: hidden;
       <div class="emblem">졸음</div>
       <div class="center-title">어느 교시에 가장 졸릴까?</div>
       <p class="center-sub">
-        학번과 이름을 입력하고 나의 최대 졸음 교시 테스트와<br />생체리듬 퀴즈·극복 팁을 확인해보세요.
+        학번과 이름을 입력하고 나의 최대 졸음 교시 테스트와<br />생체리듬 퀴즈·극복 팁·잠깨기 미션을 확인해보세요.
       </p>
 
       <div class="row-2">
@@ -458,6 +599,7 @@ overflow-x: hidden;
         <button class="tab active" data-tab="test" onclick="switchTab('test')">졸음 테스트</button>
         <button class="tab" data-tab="quiz" onclick="switchTab('quiz')">졸음 퀴즈</button>
         <button class="tab" data-tab="tips" onclick="switchTab('tips')">극복 팁</button>
+        <button class="tab" data-tab="mission" onclick="switchTab('mission')">잠깨기 미션</button>
       </div>
 
       <!-- 1. 졸음 테스트 -->
@@ -521,6 +663,106 @@ overflow-x: hidden;
         <div class="tip-item">
           <h3>6~7교시 · 오후 누적 피로 구간</h3>
           <p>하루 누적 피로가 쌓이는 시간입니다. 25~30분 단위로 필기·문제 풀이 등 손을 쓰는 활동으로 전환하고, 너무 늦은 오후 카페인은 밤잠을 방해할 수 있으니 주의하세요.</p>
+        </div>
+      </div>
+
+      <!-- 4. 잠깨기 미션 -->
+      <div id="panel-mission" class="hidden">
+        <div id="wakeMissionBox">
+          <!-- 코스 만들기 -->
+          <section id="setup" class="hidden">
+            <h1>잠깨기 미션 · 코스 만들기</h1>
+            <p class="desc">포인트가 될 자리에 직접 서서 위치를 저장합니다. 위치 정보는 이 기기에만 남고 외부로 전송되지 않습니다.</p>
+
+            <div class="wm-card">
+              <div class="field">
+                <label for="cName">코스 이름</label>
+                <input type="text" id="cName" value="점심 잠깨기 코스" />
+              </div>
+              <div class="row-2">
+                <div class="field">
+                  <label for="cRadius">도착 인정 반경 (m)</label>
+                  <input type="number" id="cRadius" value="20" min="8" max="60" />
+                </div>
+                <div class="field">
+                  <label for="cOrder">순서</label>
+                  <label style="margin-top:10px;color:var(--ink);font-size:14px;display:flex;align-items:center;gap:6px;">
+                    <input type="checkbox" id="cOrder" checked /> 정해진 순서대로
+                  </label>
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label for="cForm">후기 설문 링크 (선택)</label>
+                <input type="url" id="cForm" placeholder="https://form.naver.com/..." />
+              </div>
+            </div>
+
+            <div class="wm-card">
+              <h2>포인트</h2>
+              <div class="field">
+                <label for="pLabel">다음 포인트 이름</label>
+                <input type="text" id="pLabel" value="A" />
+              </div>
+              <button type="button" class="wm-btn primary big" id="addPt">지금 서 있는 곳을 포인트로 저장</button>
+              <p class="wm-msg" id="setupMsg">야외에서, 건물 벽에서 몇 걸음 떨어져 저장하세요. 약 8초 동안 위치를 여러 번 재서 평균을 냅니다.</p>
+              <ul class="wm-pts" id="setupList"></ul>
+            </div>
+
+            <div class="wm-card">
+              <h2>지도</h2>
+              <canvas id="setupMap"></canvas>
+              <div style="margin-top:12px;">
+                <button type="button" class="wm-btn primary big" id="makeLink">미션 링크 만들기</button>
+              </div>
+              <div id="linkOut" class="hidden">
+                <div class="wm-linkbox wm-mono" id="linkText"></div>
+                <div class="wm-row" style="margin-top:8px;">
+                  <button type="button" class="wm-btn" id="copyLink">링크 복사</button>
+                  <button type="button" class="wm-btn" id="openLink">미션 화면 열기</button>
+                </div>
+                <div id="qr"></div>
+                <p class="wm-small" style="text-align:center;margin-top:8px;">이 QR을 포스터에 붙이면 참가자가 바로 미션을 시작할 수 있습니다.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 미션 진행 -->
+          <section id="mission" class="hidden">
+            <h1 id="mTitle">잠깨기 미션</h1>
+            <p class="desc" id="mSub"></p>
+            <div class="wm-card">
+              <canvas id="map"></canvas>
+              <div class="wm-status">
+                <div class="wm-stat"><div class="k">다음 포인트까지</div><div class="v" id="sNext">–</div></div>
+                <div class="wm-stat"><div class="k">걸은 거리</div><div class="v" id="sDist">0 m</div></div>
+                <div class="wm-stat"><div class="k">경과 시간</div><div class="v" id="sTime">0:00</div></div>
+              </div>
+              <p class="wm-msg" id="mMsg">시작을 누르면 위치 확인을 요청합니다. 허용해 주세요.</p>
+            </div>
+            <div class="wm-card">
+              <h2>체크포인트</h2>
+              <ul class="wm-pts" id="mList"></ul>
+            </div>
+            <button type="button" class="wm-btn primary big" id="startBtn">미션 시작</button>
+            <p class="wm-small" style="margin-top:10px;">위치는 이 화면 안에서 거리 계산에만 쓰이고 저장·전송되지 않습니다. 걸을 때는 화면보다 앞을 보세요.</p>
+          </section>
+
+          <!-- 미션 완료 -->
+          <section id="finish" class="hidden">
+            <div class="wm-card wm-done">
+              <div class="wm-badge">✓</div>
+              <h2 style="font-size:20px;margin:10px 0 4px;">잠깨기 미션 완료!</h2>
+              <p class="wm-small" id="fCourse"></p>
+              <div class="wm-status" style="margin-top:16px;">
+                <div class="wm-stat"><div class="k">걸린 시간</div><div class="v" id="fTime"></div></div>
+                <div class="wm-stat"><div class="k">걸은 거리</div><div class="v" id="fDist"></div></div>
+                <div class="wm-stat"><div class="k">완료 시각</div><div class="v" id="fAt"></div></div>
+              </div>
+              <canvas id="fMap" style="margin-top:14px;"></canvas>
+              <a id="fForm" class="hidden"><button type="button" class="wm-btn primary big" style="margin-top:14px;">후기 남기기</button></a>
+              <p class="wm-small" style="margin-top:12px;">이 화면을 캡처해 두면 참여 기록이 됩니다.</p>
+            </div>
+          </section>
         </div>
       </div>
     </section>
@@ -648,6 +890,7 @@ overflow-x: hidden;
 
       restoreUserData(users[key]);
       renderQuiz();
+      if (typeof window.__wmInit === "function") window.__wmInit();
     }
 
     function restoreUserData(record) {
@@ -682,9 +925,12 @@ overflow-x: hidden;
       document.querySelectorAll(".tab").forEach(t => {
         t.classList.toggle("active", t.dataset.tab === tabName);
       });
-      ["test", "quiz", "tips"].forEach(name => {
+      ["test", "quiz", "tips", "mission"].forEach(name => {
         document.getElementById(`panel-${name}`).classList.toggle("hidden", name !== tabName);
       });
+      if (tabName === "mission" && typeof window.__wmResize === "function") {
+        requestAnimationFrame(() => window.__wmResize());
+      }
     }
 
     function pickGroup(group, btn) {
@@ -816,336 +1062,474 @@ overflow-x: hidden;
       }
       renderQuiz();
     }
+
+    /* ---------- 잠깨기 미션 모듈 ---------- */
+    (function () {
+      "use strict";
+      const wmBox = document.getElementById("wakeMissionBox");
+      if (!wmBox) return;
+
+      const $ = id => document.getElementById(id);
+      const R_EARTH = 6371000;
+      const MAX_ACC = 35;
+      const MIN_STEP = 4;
+
+      function dist(a, b) {
+        const toR = Math.PI / 180;
+        const dLat = (b.lat - a.lat) * toR;
+        const dLng = (b.lng - a.lng) * toR;
+        const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * toR) * Math.cos(b.lat * toR) * Math.sin(dLng / 2) ** 2;
+        return 2 * R_EARTH * Math.asin(Math.sqrt(s));
+      }
+
+      function enc(o) {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(o))))
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_")
+          .replace(/=+$/, "");
+      }
+
+      function dec(s) {
+        s = s.replace(/-/g, "+").replace(/_/g, "/");
+        while (s.length % 4) s += "=";
+        return JSON.parse(decodeURIComponent(escape(atob(s))));
+      }
+
+      function fmtM(m) {
+        return m >= 1000 ? (m / 1000).toFixed(2) + " km" : Math.round(m) + " m";
+      }
+
+      function fmtT(s) {
+        s = Math.max(0, Math.round(s));
+        return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+      }
+
+      function esc(s) {
+        return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      }
+
+      function css(v) {
+        return getComputedStyle(wmBox).getPropertyValue(v).trim() || getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+      }
+
+      function drawMap(cv, points, radius, opts) {
+        opts = opts || {};
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const W = cv.clientWidth || 320;
+        const H = cv.clientHeight || 240;
+        cv.width = W * dpr;
+        cv.height = H * dpr;
+        const g = cv.getContext("2d");
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.clearRect(0, 0, W, H);
+
+        const all = points.concat(opts.track || []).concat(opts.me ? [opts.me] : []);
+        if (!all.length) {
+          g.fillStyle = css("--wm-muted");
+          g.font = "14px sans-serif";
+          g.textAlign = "center";
+          g.fillText("아직 포인트가 없습니다", W / 2, H / 2);
+          return;
+        }
+
+        const lat0 = all.reduce((a, p) => a + p.lat, 0) / all.length;
+        const k = Math.cos(lat0 * Math.PI / 180);
+        const xy = p => ({ x: p.lng * k * 111320, y: p.lat * 110540 });
+        const ps = all.map(xy);
+
+        let minX = Math.min(...ps.map(p => p.x)) - radius;
+        let maxX = Math.max(...ps.map(p => p.x)) + radius;
+        let minY = Math.min(...ps.map(p => p.y)) - radius;
+        let maxY = Math.max(...ps.map(p => p.y)) + radius;
+
+        const pad = 24;
+        const sc = Math.min((W - 2 * pad) / Math.max(30, maxX - minX), (H - 2 * pad) / Math.max(30, maxY - minY));
+        const cx = (minX + maxX) / 2;
+        const cy = (minY + maxY) / 2;
+        const P = p => {
+          const q = xy(p);
+          return { x: W / 2 + (q.x - cx) * sc, y: H / 2 - (q.y - cy) * sc };
+        };
+
+        const bar = Math.pow(10, Math.floor(Math.log10(Math.max(10, (W * 0.3) / sc))));
+        g.strokeStyle = css("--wm-muted");
+        g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(12, H - 12);
+        g.lineTo(12 + bar * sc, H - 12);
+        g.stroke();
+        g.fillStyle = css("--wm-muted");
+        g.font = "11px sans-serif";
+        g.textAlign = "left";
+        g.fillText(bar + " m", 14, H - 17);
+
+        if (points.length > 1) {
+          g.strokeStyle = css("--wm-line");
+          g.lineWidth = 2;
+          g.setLineDash([6, 5]);
+          g.beginPath();
+          points.forEach((p, i) => {
+            const q = P(p);
+            i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y);
+          });
+          if (opts.loop && points.length > 2) {
+            const q = P(points[0]);
+            g.lineTo(q.x, q.y);
+          }
+          g.stroke();
+          g.setLineDash([]);
+        }
+
+        const tr = opts.track || [];
+        if (tr.length > 1) {
+          g.strokeStyle = css("--wm-accent");
+          g.lineWidth = 3;
+          g.lineJoin = "round";
+          g.beginPath();
+          tr.forEach((p, i) => {
+            const q = P(p);
+            i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y);
+          });
+          g.stroke();
+        }
+
+        points.forEach((p, i) => {
+          const q = P(p);
+          const ok = opts.reached && opts.reached[i];
+          g.fillStyle = ok ? css("--wm-done") : css("--wm-accent");
+          g.globalAlpha = 0.15;
+          g.beginPath();
+          g.arc(q.x, q.y, Math.max(6, radius * sc), 0, Math.PI * 2);
+          g.fill();
+          g.globalAlpha = 1;
+
+          g.beginPath();
+          g.arc(q.x, q.y, 11, 0, Math.PI * 2);
+          g.fillStyle = ok ? css("--wm-done") : css("--wm-surface");
+          g.fill();
+          g.lineWidth = 2;
+          g.strokeStyle = ok ? css("--wm-done") : css("--wm-accent");
+          g.stroke();
+
+          g.fillStyle = ok ? "#1B1408" : css("--wm-fg");
+          g.font = "bold 11px sans-serif";
+          g.textAlign = "center";
+          g.textBaseline = "middle";
+          g.fillText(String(p.label || i + 1).slice(0, 3), q.x, q.y + 0.5);
+        });
+
+        if (opts.me) {
+          const q = P(opts.me);
+          if (opts.me.acc) {
+            g.fillStyle = "#3B82F6";
+            g.globalAlpha = 0.12;
+            g.beginPath();
+            g.arc(q.x, q.y, opts.me.acc * sc, 0, Math.PI * 2);
+            g.fill();
+            g.globalAlpha = 1;
+          }
+          g.beginPath();
+          g.arc(q.x, q.y, 7, 0, Math.PI * 2);
+          g.fillStyle = "#3B82F6";
+          g.fill();
+          g.lineWidth = 3;
+          g.strokeStyle = "#fff";
+          g.stroke();
+        }
+      }
+
+      let initialized = false;
+      let course = null;
+      let setupRenderFn = null;
+      let missionRedrawFn = null;
+
+      function startSetup() {
+        $("setup").classList.remove("hidden");
+        $("mission").classList.add("hidden");
+        $("finish").classList.add("hidden");
+
+        let pts = [];
+        try {
+          const s = JSON.parse(localStorage.getItem("gpsmission-setup") || "null");
+          if (s) {
+            pts = s.p || [];
+            $("cName").value = s.n || $("cName").value;
+            $("cRadius").value = s.r || 20;
+            $("cOrder").checked = s.o !== false;
+            $("cForm").value = s.f || "";
+          }
+        } catch (e) {}
+
+        const build = () => ({
+          n: $("cName").value.trim() || "잠깨기 미션",
+          r: Math.max(8, Math.min(60, +$("cRadius").value || 20)),
+          o: $("cOrder").checked,
+          f: $("cForm").value.trim(),
+          p: pts.map(p => [+p.lat.toFixed(6), +p.lng.toFixed(6), p.label])
+        });
+
+        const save = () => {
+          try {
+            localStorage.setItem("gpsmission-setup", JSON.stringify(build()));
+          } catch (e) {}
+        };
+
+        const render = () => {
+          $("setupList").innerHTML = pts.map((p, i) =>
+            '<li><span class="wm-dot">' + esc(p.label) + '</span><span class="wm-grow wm-mono">' +
+            p.lat.toFixed(6) + ", " + p.lng.toFixed(6) +
+            '<br><span class="wm-small">오차 약 ' + Math.round(p.acc) + " m" +
+            (i ? " · 앞 포인트에서 " + fmtM(dist(pts[i - 1], p)) : "") +
+            '</span></span><button type="button" class="wm-btn" data-i="' + i + '" style="padding:6px 10px;font-size:12px;">삭제</button></li>'
+          ).join("");
+          drawMap($("setupMap"), pts, +$("cRadius").value || 20, { loop: true });
+          $("pLabel").value = String.fromCharCode(65 + Math.min(25, pts.length));
+          save();
+        };
+
+        setupRenderFn = render;
+
+        $("setupList").addEventListener("click", e => {
+          const i = e.target.dataset && e.target.dataset.i;
+          if (i !== undefined) {
+            pts.splice(+i, 1);
+            render();
+          }
+        });
+
+        ["cName", "cRadius", "cOrder", "cForm"].forEach(id => $(id).addEventListener("input", render));
+
+        $("addPt").addEventListener("click", () => {
+          if (!navigator.geolocation) {
+            $("setupMsg").className = "wm-msg warn";
+            $("setupMsg").textContent = "이 브라우저는 위치 기능을 지원하지 않습니다.";
+            return;
+          }
+          const btn = $("addPt");
+          btn.disabled = true;
+          const fixes = [];
+          const t0 = Date.now();
+          let done = false;
+          $("setupMsg").className = "wm-msg";
+          $("setupMsg").textContent = "위치를 재는 중… 움직이지 말고 기다려 주세요.";
+
+          const watchId = navigator.geolocation.watchPosition(pos => {
+            fixes.push({ lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy });
+            $("setupMsg").textContent = "위치를 재는 중… (" + fixes.length + "회, 현재 오차 약 " + Math.round(pos.coords.accuracy) + " m)";
+          }, err => {
+            finish(err);
+          }, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
+
+          const finish = err => {
+            if (done) return;
+            done = true;
+            navigator.geolocation.clearWatch(watchId);
+            btn.disabled = false;
+            const good = fixes.filter(f => f.acc <= MAX_ACC);
+            if (!good.length) {
+              $("setupMsg").className = "wm-msg warn";
+              $("setupMsg").textContent = err
+                ? ("위치를 받지 못했습니다: " + (err.code === 1 ? "위치 권한을 허용해 주세요." : err.message))
+                : "GPS 오차가 너무 큽니다(35 m 초과). 건물에서 떨어진 야외에서 다시 시도하세요.";
+              return;
+            }
+            const w = good.map(f => 1 / (f.acc * f.acc));
+            const sw = w.reduce((a, b) => a + b, 0);
+            const lat = good.reduce((a, f, i) => a + f.lat * w[i], 0) / sw;
+            const lng = good.reduce((a, f, i) => a + f.lng * w[i], 0) / sw;
+            const acc = Math.min(...good.map(f => f.acc));
+            pts.push({ lat, lng, acc, label: ($("pLabel").value.trim() || String(pts.length + 1)).slice(0, 12) });
+            $("setupMsg").className = "wm-msg";
+            $("setupMsg").textContent = "포인트 " + pts[pts.length - 1].label + " 저장 (" + good.length + "회 측정 평균, 오차 약 " + Math.round(acc) + " m). 다음 자리로 이동하세요.";
+            render();
+          };
+
+          setTimeout(() => { if (!done && Date.now() - t0 >= 7500) finish(); }, 8000);
+        });
+
+        $("makeLink").addEventListener("click", () => {
+          if (pts.length < 2) {
+            $("setupMsg").className = "wm-msg warn";
+            $("setupMsg").textContent = "포인트를 2개 이상 저장해 주세요.";
+            return;
+          }
+          const url = location.origin + location.pathname + "#c=" + enc(build());
+          $("linkOut").classList.remove("hidden");
+          $("linkText").textContent = url;
+          $("qr").innerHTML = "";
+          try {
+            new QRCode($("qr"), { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+          } catch (e) {
+            $("qr").textContent = "QR을 만들지 못했습니다. 링크를 직접 공유하세요.";
+          }
+        });
+
+        $("copyLink").addEventListener("click", () => {
+          const t = $("linkText").textContent;
+          (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+            .then(() => { $("copyLink").textContent = "복사했습니다"; }, () => { $("copyLink").textContent = "직접 선택해 복사하세요"; });
+        });
+
+        $("openLink").addEventListener("click", () => {
+          location.href = $("linkText").textContent;
+          location.reload();
+        });
+
+        render();
+      }
+
+      function startMission() {
+        $("setup").classList.add("hidden");
+        $("mission").classList.remove("hidden");
+        $("finish").classList.add("hidden");
+
+        const pts = course.p.map((p, i) => ({ lat: p[0], lng: p[1], label: p[2] || String(i + 1) }));
+        const radius = course.r || 20;
+        const ordered = course.o !== false;
+        const reached = pts.map(() => false);
+        let track = [], total = 0, me = null, t0 = 0, watch = null, timer = null, lastGood = null, wake = null;
+
+        $("mTitle").textContent = course.n || "잠깨기 미션";
+        $("mSub").textContent = "포인트 " + pts.length + "곳 · " + (ordered ? "정해진 순서대로" : "순서 상관없이") + " · 반경 " + radius + " m 안에 들어가면 도착";
+
+        const nextIdx = () => (ordered ? reached.indexOf(false) : -1);
+
+        function list() {
+          const n = nextIdx();
+          $("mList").innerHTML = pts.map((p, i) => {
+            const d = me ? fmtM(dist(me, p)) : "–";
+            return '<li><span class="wm-dot ' + (reached[i] ? "ok" : (i === n ? "next" : "")) + '">' + esc(p.label) +
+              '</span><span class="wm-grow">' + (reached[i] ? "도착 완료" : (i === n ? "다음 목적지" : "아직")) +
+              '</span><span class="wm-mono wm-small">' + (reached[i] ? "" : d) + "</span></li>";
+          }).join("");
+        }
+
+        function redraw() {
+          drawMap($("map"), pts, radius, { track, me, reached, loop: true });
+        }
+        missionRedrawFn = redraw;
+
+        function nearestTarget() {
+          if (!me) return null;
+          const cands = ordered ? [nextIdx()].filter(i => i >= 0) : pts.map((_, i) => i).filter(i => !reached[i]);
+          let best = null;
+          cands.forEach(i => {
+            const d = dist(me, pts[i]);
+            if (!best || d < best.d) best = { i, d };
+          });
+          return best;
+        }
+
+        function onPos(pos) {
+          const c = pos.coords;
+          me = { lat: c.latitude, lng: c.longitude, acc: c.accuracy };
+          if (c.accuracy > MAX_ACC) {
+            $("mMsg").className = "wm-msg warn";
+            $("mMsg").textContent = "GPS 신호가 약합니다 (오차 약 " + Math.round(c.accuracy) + " m). 건물에서 떨어진 곳으로 나가 보세요.";
+            redraw();
+            list();
+            return;
+          }
+          if (!lastGood) {
+            lastGood = me;
+            track.push(me);
+          } else {
+            const step = dist(lastGood, me);
+            if (step >= MIN_STEP && step >= c.accuracy * 0.3) {
+              total += step;
+              lastGood = me;
+              track.push(me);
+            }
+          }
+          const cands = ordered ? [nextIdx()].filter(i => i >= 0) : pts.map((_, i) => i).filter(i => !reached[i]);
+          cands.forEach(i => {
+            if (dist(me, pts[i]) <= radius) {
+              reached[i] = true;
+              try { navigator.vibrate && navigator.vibrate([120, 60, 120]); } catch (e) {}
+              $("mMsg").className = "wm-msg";
+              $("mMsg").textContent = "포인트 " + pts[i].label + " 도착! (" + reached.filter(Boolean).length + "/" + pts.length + ")";
+            }
+          });
+          const t = nearestTarget();
+          $("sNext").textContent = t ? fmtM(t.d) : "–";
+          $("sDist").textContent = fmtM(total);
+          if (reached.every(Boolean)) return complete();
+          if (!/도착!/.test($("mMsg").textContent)) {
+            $("mMsg").className = "wm-msg";
+            $("mMsg").textContent = "다음 포인트 " + (t ? pts[t.i].label : "") + "로 이동하세요 · GPS 오차 약 " + Math.round(c.accuracy) + " m";
+          }
+          redraw();
+          list();
+        }
+
+        function onErr(err) {
+          $("mMsg").className = "wm-msg warn";
+          $("mMsg").textContent = err.code === 1
+            ? "위치 권한이 꺼져 있습니다. 브라우저 설정에서 이 사이트의 위치 접근을 허용해 주세요."
+            : "위치를 받지 못했습니다: " + err.message;
+        }
+
+        function complete() {
+          if (watch !== null) navigator.geolocation.clearWatch(watch);
+          clearInterval(timer);
+          try { wake && wake.release(); } catch (e) {}
+          const el = (Date.now() - t0) / 1000;
+          $("mission").classList.add("hidden");
+          $("finish").classList.remove("hidden");
+          $("fCourse").textContent = (course.n || "잠깨기 미션") + " · 포인트 " + pts.length + "곳";
+          $("fTime").textContent = fmtT(el);
+          $("fDist").textContent = fmtM(total);
+          const d = new Date();
+          $("fAt").textContent = d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+          if (course.f && /^https:\/\//.test(course.f)) {
+            $("fForm").href = course.f;
+            $("fForm").target = "_blank";
+            $("fForm").rel = "noopener";
+            $("fForm").classList.remove("hidden");
+          }
+          requestAnimationFrame(() => drawMap($("fMap"), pts, radius, { track, reached, loop: true }));
+          try { navigator.vibrate && navigator.vibrate([200, 80, 200, 80, 300]); } catch (e) {}
+        }
+
+        $("startBtn").addEventListener("click", async () => {
+          if (!navigator.geolocation) {
+            onErr({ code: 0, message: "이 브라우저는 위치 기능을 지원하지 않습니다." });
+            return;
+          }
+          $("startBtn").classList.add("hidden");
+          t0 = Date.now();
+          $("mMsg").textContent = "위치를 찾는 중…";
+          try {
+            if (navigator.wakeLock && navigator.wakeLock.request) {
+              wake = await navigator.wakeLock.request("screen");
+            }
+          } catch (e) {}
+          watch = navigator.geolocation.watchPosition(onPos, onErr, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
+          timer = setInterval(() => { $("sTime").textContent = fmtT((Date.now() - t0) / 1000); }, 1000);
+        });
+
+        list();
+        redraw();
+      }
+
+      window.__wmInit = function () {
+        if (initialized) return;
+        initialized = true;
+        const m = location.hash.match(/c=([A-Za-z0-9_-]+)/);
+        if (m) {
+          try { course = dec(m[1]); } catch (e) { course = null; }
+        }
+        if (course && course.p && course.p.length) startMission();
+        else startSetup();
+      };
+
+      window.__wmResize = function () {
+        if (setupRenderFn && !$("setup").classList.contains("hidden")) setupRenderFn();
+        if (missionRedrawFn && !$("mission").classList.contains("hidden")) missionRedrawFn();
+      };
+
+      window.addEventListener("resize", window.__wmResize);
+    })();
   </script>
-</body>
-</html>
-
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>잠깨기 미션</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<style>
-:root{
---bg:#F2F5F3; --surface:#FFFFFF; --surface2:#E8EEEA; --fg:#14201A; --muted:#5C6B62; --line:#D3DDD6;
---accent:#1E8A5A; --accent-fg:#FFFFFF; --done:#E0952E; --warn:#B4541A;
---font:'Noto Sans KR',system-ui,-apple-system,sans-serif;
-}
-@media (prefers-color-scheme:dark){:root{
---bg:#0F1612; --surface:#17201B; --surface2:#1E2A23; --fg:#E7F0EA; --muted:#93A49A; --line:#2A3830;
---accent:#3FBF83; --accent-fg:#0F1612; --done:#E8A33D; --warn:#F08A4B; color-scheme:dark;
-}}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);-webkit-text-size-adjust:100%}
-.wrap{max-width:560px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
-h1{font-size:1.6rem;font-weight:900;margin:4px 0 2px;letter-spacing:-.02em}
-.sub{color:var(--muted);font-size:.9rem;margin:0 0 16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
-h2{font-size:1rem;margin:0 0 10px}
-label{display:block;font-size:.8rem;color:var(--muted);margin:10px 0 4px}
-input[type=text],input[type=url],input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--fg);font:inherit;font-size:16px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-button{font:inherit;font-weight:700;font-size:1rem;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--fg);cursor:pointer}
-button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
-button.big{width:100%;padding:16px;font-size:1.1rem}
-button:disabled{opacity:.5}
-button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.small{font-size:.8rem;color:var(--muted)}
-.pts{list-style:none;padding:0;margin:8px 0 0}
-.pts li{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:.92rem}
-.pts li:first-child{border-top:none}
-.dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;background:var(--surface2);border:2px solid var(--line);flex:none}
-.dot.ok{background:var(--done);border-color:var(--done);color:#1B1408}
-.dot.next{border-color:var(--accent);color:var(--accent)}
-.grow{flex:1;min-width:0}
-.mono{font-variant-numeric:tabular-nums}
-canvas{display:block;width:100%;height:260px;border-radius:12px;background:var(--surface2)}
-.status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.stat{background:var(--surface2);border-radius:10px;padding:8px 10px}
-.stat .k{font-size:.72rem;color:var(--muted)}
-.stat .v{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
-.msg{font-size:.88rem;padding:10px 12px;border-radius:10px;background:var(--surface2);margin-top:10px}
-.msg.warn{color:var(--warn)}
-.done{text-align:center;padding:28px 16px}
-.done .badge{font-size:3.2rem;font-weight:900;color:var(--done);line-height:1}
-.done h2{font-size:1.5rem;margin:12px 0 4px}
-#qr{display:flex;justify-content:center;margin-top:12px}
-#qr img,#qr canvas{background:#fff;padding:10px;border-radius:10px;width:200px!important;height:auto!important}
-.linkbox{word-break:break-all;font-size:.78rem;background:var(--surface2);padding:10px;border-radius:10px;margin-top:8px}
-[hidden]{display:none!important}
-</style>
-</head>
-<body>
-<div class="wrap">
-
-<!-- ===== 코스 만들기 ===== -->
-<section id="setup" hidden>
-<h1>잠깨기 미션 · 코스 만들기</h1>
-<p class="sub">포인트가 될 자리에 직접 서서 위치를 저장합니다. 위치 정보는 이 휴대폰에만 남고 어디로도 전송되지 않습니다.</p>
-<div class="card">
-<label for="cName">코스 이름</label>
-<input type="text" id="cName" value="점심 잠깨기 코스">
-<div class="row" style="gap:12px">
-<div class="grow"><label for="cRadius">도착 인정 반경 (m)</label><input type="number" id="cRadius" value="20" min="8" max="60"></div>
-<div class="grow"><label for="cOrder">순서</label>
-<label style="margin:8px 0 0;color:var(--fg);font-size:.95rem"><input type="checkbox" id="cOrder" checked> 정해진 순서대로</label></div>
-</div>
-<label for="cForm">후기 설문 링크 (선택)</label>
-<input type="url" id="cForm" placeholder="https://form.naver.com/...">
-</div>
-<div class="card">
-<h2>포인트</h2>
-<label for="pLabel">다음 포인트 이름</label>
-<input type="text" id="pLabel" value="A">
-<div class="row" style="margin-top:10px"><button class="primary big" id="addPt">지금 서 있는 곳을 포인트로 저장</button></div>
-<p class="msg" id="setupMsg">야외에서, 건물 벽에서 몇 걸음 떨어져 저장하세요. 약 8초 동안 위치를 여러 번 재서 평균을 냅니다.</p>
-<ul class="pts" id="setupList"></ul>
-</div>
-<div class="card">
-<h2>지도</h2>
-<canvas id="setupMap"></canvas>
-<div class="row" style="margin-top:12px">
-<button class="primary big" id="makeLink">미션 링크 만들기</button>
-</div>
-<div id="linkOut" hidden>
-<div class="linkbox mono" id="linkText"></div>
-<div class="row" style="margin-top:8px"><button id="copyLink">링크 복사</button><button id="openLink">미션 화면 열기</button></div>
-<div id="qr"></div>
-<p class="small" style="text-align:center">이 QR을 포스터에 붙이면 참가자가 바로 미션을 시작할 수 있습니다.</p>
-</div>
-</div>
-</section>
-
-<!-- ===== 미션 ===== -->
-<section id="mission" hidden>
-<h1 id="mTitle">잠깨기 미션</h1>
-<p class="sub" id="mSub"></p>
-<div class="card">
-<canvas id="map"></canvas>
-<div class="status">
-<div class="stat"><div class="k">다음 포인트까지</div><div class="v" id="sNext">–</div></div>
-<div class="stat"><div class="k">걸은 거리</div><div class="v" id="sDist">0 m</div></div>
-<div class="stat"><div class="k">경과 시간</div><div class="v" id="sTime">0:00</div></div>
-</div>
-<p class="msg" id="mMsg">시작을 누르면 위치 확인을 요청합니다. 허용해 주세요.</p>
-</div>
-<div class="card">
-<h2>체크포인트</h2>
-<ul class="pts" id="mList"></ul>
-</div>
-<button class="primary big" id="startBtn">미션 시작</button>
-<p class="small" style="margin-top:10px">위치는 이 화면 안에서 거리 계산에만 쓰이고 저장·전송되지 않습니다. 걸을 때는 화면보다 앞을 보세요.</p>
-</section>
-
-<!-- ===== 완료 ===== -->
-<section id="finish" hidden>
-<div class="card done">
-<div class="badge">✓</div>
-<h2>잠깨기 미션 완료!</h2>
-<p class="sub" id="fCourse" style="margin:0"></p>
-<div class="status" style="margin-top:18px">
-<div class="stat"><div class="k">걸린 시간</div><div class="v" id="fTime"></div></div>
-<div class="stat"><div class="k">걸은 거리</div><div class="v" id="fDist"></div></div>
-<div class="stat"><div class="k">완료 시각</div><div class="v" id="fAt"></div></div>
-</div>
-<canvas id="fMap" style="margin-top:14px"></canvas>
-<a id="fForm" hidden><button class="primary big" style="margin-top:14px">후기 남기기</button></a>
-<p class="small" style="margin-top:12px">이 화면을 캡처해 두면 참여 기록이 됩니다.</p>
-</div>
-</section>
-
-</div>
-<script>
-(function(){
-"use strict";
-const $=id=>document.getElementById(id);
-const R_EARTH=6371000;
-const MAX_ACC=35;          // 이보다 부정확한 위치는 판정에 쓰지 않음 (m)
-const MIN_STEP=4;          // 이보다 작은 이동은 GPS 흔들림으로 보고 거리에 넣지 않음 (m)
-
-function dist(a,b){
-const toR=Math.PI/180, dLat=(b.lat-a.lat)toR, dLng=(b.lng-a.lng)toR;
-const s=Math.sin(dLat/2)**2+Math.cos(a.lattoR)Math.cos(b.lattoR)Math.sin(dLng/2)**2;
-return 2R_EARTHMath.asin(Math.sqrt(s));
-}
-function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/+/g,"-").replace(///g,"").replace(/=+$/,"");}
-function dec(s){s=s.replace(/-/g,"+").replace(//g,"/");while(s.length%4)s+="=";return JSON.parse(decodeURIComponent(escape(atob(s))));}
-function fmtM(m){return m>=1000?(m/1000).toFixed(2)+" km":Math.round(m)+" m";}
-function fmtT(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
-
-/* ---------- 지도 그리기 (지도 타일 없이 상대 위치만) ---------- /
-function drawMap(cv,points,radius,opts){
-opts=opts||{};
-const dpr=Math.min(2,window.devicePixelRatio||1), W=cv.clientWidth, H=cv.clientHeight||260;
-cv.width=Wdpr; cv.height=Hdpr;
-const g=cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
-const all=points.concat(opts.track||[]).concat(opts.me?[opts.me]:[]);
-if(!all.length){g.fillStyle=css("--muted");g.font="14px sans-serif";g.textAlign="center";g.fillText("아직 포인트가 없습니다",W/2,H/2);return;}
-const lat0=all.reduce((a,p)=>a+p.lat,0)/all.length, k=Math.cos(lat0Math.PI/180);
-const xy=p=>({x:(p.lng)k111320,y:(p.lat)110540});
-const ps=all.map(xy);
-let minX=Math.min(...ps.map(p=>p.x))-radius, maxX=Math.max(...ps.map(p=>p.x))+radius;
-let minY=Math.min(...ps.map(p=>p.y))-radius, maxY=Math.max(...ps.map(p=>p.y))+radius;
-const pad=24, sc=Math.min((W-2pad)/Math.max(30,maxX-minX),(H-2pad)/Math.max(30,maxY-minY));
-const cx=(minX+maxX)/2, cy=(minY+maxY)/2;
-const P=p=>{const q=xy(p);return{x:W/2+(q.x-cx)sc,y:H/2-(q.y-cy)sc};};
-// 축척 막대
-const bar=Math.pow(10,Math.floor(Math.log10(Math.max(10,(W0.3)/sc))));
-g.strokeStyle=css("--muted");g.lineWidth=2;g.beginPath();g.moveTo(12,H-12);g.lineTo(12+barsc,H-12);g.stroke();
-g.fillStyle=css("--muted");g.font="11px sans-serif";g.textAlign="left";g.fillText(bar+" m",14,H-17);
-// 코스 선
-if(points.length>1){g.strokeStyle=css("--line");g.lineWidth=2;g.setLineDash([6,5]);g.beginPath();
-\points.forEach((p,i)=>{const q=P(p);i?g.lineTo(q.x,q.y):g.moveTo(q.x,q.y);});
-\if(opts.loop&&points.length>2){const q=P(points[0]);g.lineTo(q.x,q.y);} g.stroke();g.setLineDash([]);}
-// 이동 경로
-const tr=opts.track||[];
-if(tr.length>1){g.strokeStyle=css("--accent");g.lineWidth=3;g.lineJoin="round";g.beginPath();
-\tr.forEach((p,i)=>{const q=P(p);i?g.lineTo(q.x,q.y):g.moveTo(q.x,q.y);});g.stroke();}
-// 포인트
-points.forEach((p,i)=>{
-\const q=P(p), ok=opts.reached&&opts.reached[i];
-\g.fillStyle=ok?css("--done"):css("--accent");g.globalAlpha=.15;
-\g.beginPath();g.arc(q.x,q.y,Math.max(6,radiussc),0,Math.PI2);g.fill();g.globalAlpha=1;
-\g.beginPath();g.arc(q.x,q.y,11,0,Math.PI2);g.fillStyle=ok?css("--done"):css("--surface");g.fill();
-\g.lineWidth=2;g.strokeStyle=ok?css("--done"):css("--accent");g.stroke();
-\g.fillStyle=ok?"#1B1408":css("--fg");g.font="bold 11px sans-serif";g.textAlign="center";g.textBaseline="middle";
-\g.fillText(String(p.label||i+1).slice(0,3),q.x,q.y+.5);
-});
-// 현재 위치
-if(opts.me){const q=P(opts.me);
-\if(opts.me.acc){g.fillStyle="#3B82F6";g.globalAlpha=.12;g.beginPath();g.arc(q.x,q.y,opts.me.accsc,0,Math.PI2);g.fill();g.globalAlpha=1;}
-\g.beginPath();g.arc(q.x,q.y,7,0,Math.PI*2);g.fillStyle="#3B82F6";g.fill();g.lineWidth=3;g.strokeStyle="#fff";g.stroke();}
-}
-
-/* ---------- 라우팅 ---------- */
-let course=null;
-const m=location.hash.match(/c=([A-Za-z0-9_-]+)/);
-if(m){try{course=dec(m[1]);}catch(e){course=null;}}
-if(course&&course.p&&course.p.length) startMission(); else startSetup();
-
-/* ---------- 코스 만들기 ---------- /
-function startSetup(){
-$("setup").hidden=false;
-let pts=[];
-try{const s=JSON.parse(localStorage.getItem("gpsmission-setup")||"null");if(s){pts=s.p||[];$("cName").value=s.n||$("cName").value;$("cRadius").value=s.r||20;$("cOrder").checked=s.o!==false;$("cForm").value=s.f||"";}}catch(e){}
-const save=()=>{try{localStorage.setItem("gpsmission-setup",JSON.stringify(build()));}catch(e){}};
-const build=()=>({n:$("cName").value.trim()||"잠깨기 미션",r:Math.max(8,Math.min(60,+$("cRadius").value||20)),o:$("cOrder").checked,f:$("cForm").value.trim(),
-\p:pts.map(p=>[+p.lat.toFixed(6),+p.lng.toFixed(6),p.label])});
-const render=()=>{
-$("setupList").innerHTML=pts.map((p,i)=>'<li><span class="dot">'+esc(p.label)+'</span><span class="grow mono">'
-+p.lat.toFixed(6)+", "+p.lng.toFixed(6)+'<br><span class="small">오차 약 '+Math.round(p.acc)+' m'
-+(i?' · 앞 포인트에서 '+fmtM(dist(pts[i-1],p)):'')+'</span></span><button data-i="'+i+'" style="padding:6px 10px;font-size:.8rem">삭제</button></li>').join("");
-\drawMap($("setupMap"),pts,+$("cRadius").value||20,{loop:true});
-$("pLabel").value=String.fromCharCode(65+Math.min(25,pts.length));
-\save();
-};
-$("setupList").addEventListener("click",e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!==undefined){pts.splice(+i,1);render();}});
-["cName","cRadius","cOrder","cForm"].forEach(id=>$(id).addEventListener("input",render));
-$("addPt").addEventListener("click",()=>{
-\if(!navigator.geolocation){$("setupMsg").textContent="이 브라우저는 위치 기능을 지원하지 않습니다.";return;}
-\const btn=$("addPt"); btn.disabled=true;
-\const fixes=[]; const t0=Date.now();
-$("setupMsg").className="msg"; $("setupMsg").textContent="위치를 재는 중… 움직이지 말고 기다려 주세요.";
-\const id=navigator.geolocation.watchPosition(pos=>{
-\fixes.push({lat:pos.coords.latitude,lng:pos.coords.longitude,acc:pos.coords.accuracy});
-$("setupMsg").textContent="위치를 재는 중… ("+fixes.length+"회, 현재 오차 약 "+Math.round(pos.coords.accuracy)+" m)";
-},err=>{finish(err);},{enableHighAccuracy:true,maximumAge:0,timeout:15000});
-\const finish=(err)=>{
-\navigator.geolocation.clearWatch(id); btn.disabled=false;
-\const good=fixes.filter(f=>f.acc<=MAX_ACC);
-\if(!good.length){$("setupMsg").className="msg warn";
-$("setupMsg").textContent=err?("위치를 받지 못했습니다: "+(err.code===1?"위치 권한을 허용해 주세요.":err.message)):"GPS 오차가 너무 큽니다(35 m 초과). 건물에서 떨어진 야외에서 다시 시도하세요.";return;}
-\const w=good.map(f=>1/(f.accf.acc)), sw=w.reduce((a,b)=>a+b,0);
-\const lat=good.reduce((a,f,i)=>a+f.latw[i],0)/sw, lng=good.reduce((a,f,i)=>a+f.lngw[i],0)/sw;
-\const acc=Math.min(...good.map(f=>f.acc));
-\pts.push({lat,lng,acc,label:($("pLabel").value.trim()||String(pts.length+1)).slice(0,12)});
-$("setupMsg").textContent="포인트 "+pts[pts.length-1].label+" 저장 ("+good.length+"회 측정 평균, 오차 약 "+Math.round(acc)+" m). 다음 자리로 이동하세요.";
-\render();
-};
-\setTimeout(()=>{if(Date.now()-t0>=7900)finish();},8000);
-});
-$("makeLink").addEventListener("click",()=>{
-\if(pts.length<2){$("setupMsg").className="msg warn";$("setupMsg").textContent="포인트를 2개 이상 저장해 주세요.";return;}
-\const url=location.origin+location.pathname+"#c="+enc(build());
-$("linkOut").hidden=false; $("linkText").textContent=url;
-$("qr").innerHTML=""; try{new QRCode($("qr"),{text:url,width:256,height:256,correctLevel:QRCode.CorrectLevel.M});}catch(e){$("qr").textContent="QR을 만들지 못했습니다. 링크를 직접 공유하세요.";}
-});
-$("copyLink").addEventListener("click",()=>{const t=$("linkText").textContent;
-(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$("copyLink").textContent="복사했습니다";},()=>{$("copyLink").textContent="직접 선택해 복사하세요";});});
-$("openLink").addEventListener("click",()=>{location.href=$("linkText").textContent;location.reload();});
-render();
-window.addEventListener("resize",render);
-}
-
-/* ---------- 미션 ---------- /
-function startMission(){
-$("mission").hidden=false;
-const pts=course.p.map((p,i)=>({lat:p[0],lng:p[1],label:p[2]||String(i+1)}));
-const radius=course.r||20, ordered=course.o!==false;
-const reached=pts.map(()=>false);
-let track=[], total=0, me=null, t0=0, watch=null, timer=null, lastGood=null, wake=null;
-$("mTitle").textContent=course.n||"잠깨기 미션";
-$("mSub").textContent="포인트 "+pts.length+"곳 · "+(ordered?"정해진 순서대로":"순서 상관없이")+" · 반경 "+radius+" m 안에 들어가면 도착";
-const nextIdx=()=>ordered?reached.indexOf(false):-1;
-function list(){
-\const n=nextIdx();
-$("mList").innerHTML=pts.map((p,i)=>{
-\const d=me?fmtM(dist(me,p)):"–";
-\return '<li><span class="dot '+(reached[i]?"ok":(i===n?"next":""))+'">'+esc(p.label)+'</span><span class="grow">'
-+(reached[i]?"도착 완료":(i===n?"다음 목적지":"아직"))+'</span><span class="mono small">'+(reached[i]?"":d)+'</span></li>';}).join("");
-}
-function redraw(){drawMap($("map"),pts,radius,{track,me,reached,loop:true});}
-function nearestTarget(){
-\if(!me) return null;
-\const cands=ordered?[nextIdx()].filter(i=>i>=0):pts.map((_,i)=>i).filter(i=>!reached[i]);
-\let best=null; cands.forEach(i=>{const d=dist(me,pts[i]); if(!best||d<best.d) best={i,d};}); return best;
-}
-function onPos(pos){
-\const c=pos.coords; me={lat:c.latitude,lng:c.longitude,acc:c.accuracy};
-\if(c.accuracy>MAX_ACC){$("mMsg").className="msg warn";$("mMsg").textContent="GPS 신호가 약합니다 (오차 약 "+Math.round(c.accuracy)+" m). 건물에서 떨어진 곳으로 나가 보세요.";redraw();list();return;}
-\if(!lastGood){lastGood=me;track.push(me);}
-\else{const step=dist(lastGood,me); if(step>=MIN_STEP && step>=c.accuracy0.3){total+=step;lastGood=me;track.push(me);}}
-\const cands=ordered?[nextIdx()].filter(i=>i>=0):pts.map((_,i)=>i).filter(i=>!reached[i]);
-\cands.forEach(i=>{ if(dist(me,pts[i])<=radius){ reached[i]=true; try{navigator.vibrate&&navigator.vibrate([120,60,120]);}catch(e){}
-$("mMsg").className="msg"; $("mMsg").textContent="포인트 "+pts[i].label+" 도착! ("+reached.filter(Boolean).length+"/"+pts.length+")"; }});
-\const t=nearestTarget();
-$("sNext").textContent=t?fmtM(t.d):"–";
-$("sDist").textContent=fmtM(total);
-\if(reached.every(Boolean)) return complete();
-\if(!/도착!/.test($("mMsg").textContent)){$("mMsg").className="msg";$("mMsg").textContent="다음 포인트 "+(t?pts[t.i].label:"")+"로 이동하세요 · GPS 오차 약 "+Math.round(c.accuracy)+" m";}
-\redraw(); list();
-}
-function onErr(err){$("mMsg").className="msg warn";$("mMsg").textContent=err.code===1?"위치 권한이 꺼져 있습니다. 브라우저 설정에서 이 사이트의 위치 접근을 허용해 주세요.":"위치를 받지 못했습니다: "+err.message;}
-function complete(){
-\if(watch!==null) navigator.geolocation.clearWatch(watch); clearInterval(timer);
-\try{wake&&wake.release();}catch(e){}
-\const el=(Date.now()-t0)/1000;
-$("mission").hidden=true; $("finish").hidden=false;
-$("fCourse").textContent=(course.n||"잠깨기 미션")+" · 포인트 "+pts.length+"곳";
-$("fTime").textContent=fmtT(el); $("fDist").textContent=fmtM(total);
-\const d=new Date(); $("fAt").textContent=d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
-\if(course.f&&/^https:///.test(course.f)){$("fForm").href=course.f;$("fForm").target="_blank";$("fForm").rel="noopener";$("fForm").hidden=false;}
-\requestAnimationFrame(()=>drawMap($("fMap"),pts,radius,{track,reached,loop:true}));
-\try{navigator.vibrate&&navigator.vibrate([200,80,200,80,300]);}catch(e){}
-}
-$("startBtn").addEventListener("click",async()=>{
-\if(!navigator.geolocation){onErr({code:0,message:"이 브라우저는 위치 기능을 지원하지 않습니다."});return;}
-$("startBtn").hidden=true; t0=Date.now();
-$("mMsg").textContent="위치를 찾는 중…";
-\try{wake=await navigator.wakeLock.request("screen");}catch(e){}
-\watch=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});
-\timer=setInterval(()=>{$("sTime").textContent=fmtT((Date.now()-t0)/1000);},1000);
-});
-list(); redraw();
-window.addEventListener("resize",redraw);
-window.__mission={reached,get total(){return total;}};
-}
-})();
-</script>
 </body>
 </html>
