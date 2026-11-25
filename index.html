@@ -259,7 +259,7 @@ $("copyLink").addEventListener("click",()=>{const t=$("linkText").textContent;
 (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$("copyLink").textContent="복사했습니다";},()=>{$("copyLink").textContent="직접 선택해 복사하세요";});});
 $("openLink").addEventListener("click",()=>{location.href=$("linkText").textContent;location.reload();});
 render();
-window.addEventListener("resize",render);
+window.addEventListener("resize",()=>drawMap($("setupMap"),pts,+$("cRadius").value||20,{loop:true}));
 }
 
 /* ---------- 미션 ---------- /
